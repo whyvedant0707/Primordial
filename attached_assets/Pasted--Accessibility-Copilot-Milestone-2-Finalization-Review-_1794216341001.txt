@@ -1,0 +1,56 @@
+## Accessibility Copilot – Milestone 2 Finalization
+
+Review the complete existing codebase and finish the remaining Milestone 2 requirements.
+
+Do not redesign the application or introduce unnecessary features. Preserve the current architecture and working functionality.
+
+### 1. AI Remediation
+- Test different violation categories, including missing alt text, color contrast, form labels, accessible names, and ARIA-related issues.
+- Ensure generated fixes are validated.
+- Ensure Apply & Verify checks the original violation and detects regressions.
+- Never claim verification when the baseline violation cannot be reproduced.
+
+### 2. Human Review Checklist
+- Verify all 9 checklist questions.
+- Test all three answer options.
+- Ensure answered and needs-attention counts update correctly.
+- Verify answers persist after refreshing.
+- Verify answers are associated with the correct scan.
+- Check whether human-review results are included in report export.
+
+### 3. WCAG Guidance
+- Verify that explanations include relevant WCAG criteria.
+- Add relevant W3C/WAI guidance references where missing.
+- Avoid incorrect or fabricated references.
+
+### 4. Code Export
+- Test one-click clipboard export.
+- Ensure copied code is properly formatted and usable.
+- Handle clipboard errors clearly.
+
+### 5. Persistence
+- Inspect the current storage implementation.
+- If MongoDB persistence is part of the intended scope, verify saving, retrieving, isolation between users, and expiry behavior.
+- Do not silently replace working localStorage functionality.
+
+### 6. Regression Testing
+- Run existing backend tests.
+- Run frontend and backend type checks.
+- Test URL validation and SSRF protection.
+- Test scan failures and provider failures.
+- Test ambiguous element matching and missing baseline violations.
+- Ensure no existing functionality breaks.
+
+### 7. Final Report
+Provide a clear table containing:
+- Requirement
+- Implemented / Not implemented
+- Tests performed
+- Test results
+- Remaining issues
+
+Do not mark a feature complete unless it has been tested successfully.
+
+Do not add GitHub PR automation, multi-page crawling, or other roadmap features to Milestone 2.
+
+Finish the remaining in-scope requirements and report exactly what is ready for final submission.

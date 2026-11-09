@@ -1,0 +1,36 @@
+kind = "web"
+previewPath = "/"
+title = "Primordial — Accessibility Copilot"
+description = "Scan public pages with Playwright and Axe-core, locate accessibility violations, request on-demand fixes, simulate verification and complete human review."
+version = "1.0.0"
+id = "artifacts/primordial"
+router = "path"
+
+[[services]]
+name = "web"
+paths = ["/"]
+localPort = 21028
+
+[services.development]
+run = "pnpm --filter @workspace/primordial run dev"
+
+[services.production.build]
+args = ["pnpm", "--filter", "@workspace/primordial", "run", "build"]
+
+[services.production.build.env]
+NODE_ENV = "production"
+
+[services.production.run]
+args = ["pnpm", "--filter", "@workspace/primordial", "run", "serve"]
+
+[services.production.run.env]
+NODE_ENV = "production"
+PORT = "21028"
+BASE_PATH = "/"
+
+[services.production.health.startup]
+path = "/"
+
+[services.env]
+PORT = "21028"
+BASE_PATH = "/"

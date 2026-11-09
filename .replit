@@ -1,0 +1,30 @@
+modules = ["nodejs-24", "python-base-3.13"]
+
+[deployment]
+router = "application"
+deploymentTarget = "autoscale"
+
+[deployment.postBuild]
+args = ["pnpm", "store", "prune"]
+env = { "CI" = "true" }
+
+[workflows]
+runButton = "Project"
+
+[agent]
+stack = "PNPM_WORKSPACE"
+expertMode = true
+
+[postMerge]
+path = "scripts/post-merge.sh"
+timeoutMs = 180000
+
+[nix]
+channel = "stable-25_05"
+packages = ["chromium"]
+
+[userenv]
+
+[userenv.shared]
+OPENAI_BASE_URL = "https://barry-identifies-license-buses.trycloudflare.com/v1"
+OPENAI_MODEL = "qwen3-coder-next"

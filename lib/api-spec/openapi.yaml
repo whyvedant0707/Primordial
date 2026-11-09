@@ -1,0 +1,294 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.2.0
+  description: Accessibility Copilot single-page auditing API
+servers:
+  - url: /api
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/HealthStatus" }
+  /config:
+    get:
+      operationId: getConfig
+      responses:
+        "200":
+          description: Available capabilities
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Capabilities" }
+  /scan:
+    post:
+      operationId: createScan
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ScanInput" }
+      responses:
+        "202":
+          description: Scan started; poll by ID
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scan" }
+        "400": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+  /scan/{id}:
+    get:
+      operationId: getScan
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Current scan state and results
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Scan" }
+        "404": { $ref: "#/components/responses/Error" }
+  /scan/{id}/export:
+    get:
+      operationId: exportScanReport
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Shareable accessibility findings without temporary or internal state
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/SavedReportExport" }
+        "404": { $ref: "#/components/responses/Error" }
+        "409": { $ref: "#/components/responses/Error" }
+  /scan/{id}/screenshot:
+    get:
+      operationId: getScanScreenshot
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "200":
+          description: Temporary captured viewport image
+          content:
+            image/jpeg:
+              schema: { type: string, format: binary }
+        "404": { $ref: "#/components/responses/Error" }
+  /history:
+    get:
+      operationId: getHistory
+      responses:
+        "200":
+          description: Persisted recent scans; empty without MongoDB
+          content:
+            application/json:
+              schema: { type: array, items: { $ref: "#/components/schemas/ScanSummary" } }
+        "503": { $ref: "#/components/responses/Error" }
+  /history/{id}:
+    delete:
+      operationId: deleteHistory
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: string, format: uuid } }
+      responses:
+        "204":
+          description: Saved report deleted
+        "401": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /remediate:
+    post:
+      operationId: remediate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/IssueInput" }
+      responses:
+        "200":
+          description: Suggested correction, never automatically applied
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Fix" }
+        "400": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+        "503": { $ref: "#/components/responses/Error" }
+  /verify:
+    post:
+      operationId: verifyFix
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/VerificationInput" }
+      responses:
+        "200":
+          description: Isolated simulation result, not production verification
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Verification" }
+        "400": { $ref: "#/components/responses/Error" }
+        "404": { $ref: "#/components/responses/Error" }
+        "429": { $ref: "#/components/responses/Error" }
+components:
+  responses:
+    Error:
+      description: Request failed
+      content:
+        application/json:
+          schema: { $ref: "#/components/schemas/ApiFailure" }
+  schemas:
+    HealthStatus:
+      type: object
+      required: [status]
+      properties:
+        status: { type: string }
+    ApiFailure:
+      type: object
+      required: [error]
+      properties:
+        error: { type: string }
+    Capabilities:
+      type: object
+      required: [gemini, history, retention]
+      properties:
+        gemini: { type: boolean }
+        provider: { type: string, enum: [gemini, openai-compatible, deterministic, configuration-error] }
+        providerError: { type: string }
+        history: { type: boolean }
+        retention: { type: string }
+    ScanInput:
+      type: object
+      required: [url]
+      properties:
+        url: { type: string, minLength: 1, maxLength: 2048 }
+    IssueInput:
+      type: object
+      required: [scanId, issueId, nodeIndex]
+      properties:
+        scanId: { type: string, format: uuid }
+        issueId: { type: string, minLength: 1, maxLength: 100 }
+        nodeIndex: { type: integer, minimum: 0, maximum: 9999 }
+    VerificationInput:
+      allOf:
+        - { $ref: "#/components/schemas/IssueInput" }
+        - type: object
+          required: [fixId]
+          properties:
+            fixId: { type: string, format: uuid }
+    Box:
+      type: object
+      required: [x, y, width, height]
+      properties:
+        x: { type: number }
+        y: { type: number }
+        width: { type: number }
+        height: { type: number }
+    IssueNode:
+      type: object
+      required: [html, target, summary]
+      properties:
+        html: { type: string }
+        target: { type: array, items: { type: string } }
+        summary: { type: string }
+        box: { $ref: "#/components/schemas/Box" }
+    Issue:
+      type: object
+      required: [id, impact, help, description, helpUrl, wcag, principle, nodes]
+      properties:
+        id: { type: string }
+        impact: { type: string, enum: [critical, serious, moderate, minor, unknown] }
+        help: { type: string }
+        description: { type: string }
+        helpUrl: { type: string }
+        wcag: { type: array, items: { type: string } }
+        principle: { type: string, enum: [Perceivable, Operable, Understandable, Robust, Other] }
+        nodes: { type: array, items: { $ref: "#/components/schemas/IssueNode" } }
+    ScanSummary:
+      type: object
+      required: [id, url, createdAt, total]
+      properties:
+        id: { type: string }
+        url: { type: string }
+        createdAt: { type: string }
+        total: { type: integer }
+    Scan:
+      type: object
+      required: [id, url, createdAt, status, stage, issues, warnings]
+      properties:
+        id: { type: string }
+        url: { type: string }
+        createdAt: { type: string }
+        status: { type: string, enum: [running, complete, failed] }
+        stage: { type: string }
+        issues: { type: array, items: { $ref: "#/components/schemas/Issue" } }
+        warnings: { type: array, items: { type: string } }
+        title: { type: string }
+        error: { type: string }
+        screenshot: { type: string }
+        screenshotWidth: { type: number }
+        screenshotHeight: { type: number }
+        passes: { type: integer }
+        incomplete: { type: integer }
+        durationMs: { type: integer }
+    SavedReportExport:
+      type: object
+      required: [formatVersion, scope, disclaimer, scan]
+      properties:
+        formatVersion: { type: integer, enum: [1] }
+        scope: { type: string }
+        disclaimer: { type: string }
+        scan:
+          type: object
+          required: [url, createdAt, issues]
+          properties:
+            title: { type: string }
+            url: { type: string }
+            createdAt: { type: string }
+            passes: { type: integer }
+            incomplete: { type: integer }
+            durationMs: { type: integer }
+            issues: { type: array, items: { $ref: "#/components/schemas/ExportedIssue" } }
+    ExportedIssue:
+      type: object
+      required: [id, impact, help, description, helpUrl, wcag, principle, nodes]
+      properties:
+        id: { type: string }
+        impact: { type: string, enum: [critical, serious, moderate, minor, unknown] }
+        help: { type: string }
+        description: { type: string }
+        helpUrl: { type: string }
+        wcag: { type: array, items: { type: string } }
+        principle: { type: string, enum: [Perceivable, Operable, Understandable, Robust, Other] }
+        nodes: { type: array, items: { $ref: "#/components/schemas/ExportedIssueNode" } }
+    ExportedIssueNode:
+      type: object
+      required: [html, target, summary]
+      properties:
+        html: { type: string }
+        target: { type: array, items: { type: string } }
+        summary: { type: string }
+    Fix:
+      type: object
+      required: [id, source, original, suggested, explanation, correction, wcag, warning]
+      properties:
+        id: { type: string }
+        source: { type: string, enum: [gemini, deterministic, openai-compatible] }
+        original: { type: string }
+        suggested: { type: string }
+        explanation: { type: string }
+        correction: { type: string }
+        wcag: { type: array, items: { type: string } }
+        warning: { type: string }
+    Verification:
+      type: object
+      required: [status, explanation, before, after, regressions]
+      properties:
+        status: { type: string, enum: [Verified in simulation, Issue still detected, Regression detected, Verification unavailable] }
+        explanation: { type: string }
+        before: { type: integer }
+        after: { type: integer }
+        regressions: { type: array, items: { type: string } }
