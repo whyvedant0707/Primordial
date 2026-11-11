@@ -1,5 +1,0 @@
-- [Next.js stack approval](nextjs-stack.md) — user approved custom Next.js setup; React/Vite is not an approved product substitute.
-- [Browser verification fallback](browser-checks.md) — if the runtime rejects the testing callback, use direct Playwright interaction checks.
-- [Gemini credential validation](gemini-credential-validation.md) — secret presence confirms configuration only; live API access still needs a real provider request.
-- [Environment presence inspection](environment-presence.md) — platform settings are grouped by scope; distinguish saved settings from the running process.
-- [Verification integrity](verification-integrity.md) — disappearing Axe violations are insufficient if a patch removes, hides, or disables the affected content.
