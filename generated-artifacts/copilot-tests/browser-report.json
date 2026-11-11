@@ -1,0 +1,78 @@
+{
+  "privateUrlRejected": true,
+  "scanId": "5ad4447b-6339-4e3b-8968-204f93dbee31",
+  "failingRules": "5",
+  "filtersAndNodeSelection": true,
+  "copyActions": true,
+  "verification": "Verified in simulation\n\nAxe-core reproduced the selected violation before the patch and did not detect it afterward, with no new detected rule/element combinations in the sanitized snapshot. This is not production verification or proof of semantic accuracy, keyboard usability or WCAG compliance.\n\nSnapshot violation instances before: 38 · after: 37",
+  "reviewPersistsAcrossReload": true,
+  "mobileWidth": {
+    "viewport": 390,
+    "document": 390
+  },
+  "guideWorks": true,
+  "guideAccessibility": [],
+  "requests": [
+    {
+      "url": "http://localhost/api/config",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/config",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan",
+      "status": 400
+    },
+    {
+      "url": "http://localhost/api/scan",
+      "status": 202
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31/screenshot",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/remediate",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/verify",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/config",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/config",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31",
+      "status": 200
+    },
+    {
+      "url": "http://localhost/api/scan/5ad4447b-6339-4e3b-8968-204f93dbee31/screenshot",
+      "status": 200
+    }
+  ],
+  "browserErrors": []
+}

@@ -1,0 +1,29 @@
+kind = "video"
+videoAspectRatio = "16:9"
+previewPath = "/primordial-overview/"
+title = "Primordial — Project Overview"
+description = "An animated introduction to Primordial Accessibility Copilot and its scan, locate, AI suggestion, verification, and human-review workflow."
+version = "1.0.0"
+id = "artifacts/primordial-overview"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/primordial-overview/" ]
+localPort = 19837
+
+[services.development]
+run = "pnpm --filter @workspace/primordial-overview run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/primordial-overview", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/primordial-overview/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "19837"
+BASE_PATH = "/primordial-overview/"

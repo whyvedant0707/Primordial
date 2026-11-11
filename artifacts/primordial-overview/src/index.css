@@ -1,0 +1,93 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap');
+@import 'tailwindcss';
+
+/* REPLACE THESE -- define your own palette and fonts for each video */
+:root {
+  --color-primary: #4f46e5;
+  --color-secondary: #45507a;
+  --color-accent: #4f46e5;
+
+  --color-bg-light: #f5f6fa;
+  --color-bg-dark: #141b3a;
+  --color-bg-muted: #eef0fd;
+
+  --color-text-primary: #141b3a;
+  --color-text-secondary: #45507a;
+  --color-text-muted: #596386;
+  --color-text-inverse: #fdfdff;
+
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-error: #ef4444;
+
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'IBM Plex Sans', sans-serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+}
+
+@theme inline {
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-bg-light: var(--color-bg-light);
+  --color-bg-dark: var(--color-bg-dark);
+  --color-bg-muted: var(--color-bg-muted);
+  --color-text-primary: var(--color-text-primary);
+  --color-text-secondary: var(--color-text-secondary);
+  --color-text-muted: var(--color-text-muted);
+  --color-text-inverse: var(--color-text-inverse);
+  --color-success: var(--color-success);
+  --color-warning: var(--color-warning);
+  --color-error: var(--color-error);
+  --font-display: var(--font-display);
+  --font-body: var(--font-body);
+  --font-mono: var(--font-mono);
+}
+
+body {
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.video-media-frame {
+  box-sizing: border-box;
+  height: 100%;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  width: 100%;
+}
+
+.video-media-frame > :is(img, video) {
+  display: block;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+}
+
+.video-media-frame[data-media-fit='contain'] > :is(img, video) {
+  object-fit: contain;
+}
+
+.video-media-frame[data-media-position='top'] > :is(img, video) {
+  object-position: top;
+}
+
+.video-media-frame[data-media-position='right'] > :is(img, video) {
+  object-position: right;
+}
+
+.video-media-frame[data-media-position='bottom'] > :is(img, video) {
+  object-position: bottom;
+}
+
+.video-media-frame[data-media-position='left'] > :is(img, video) {
+  object-position: left;
+}
+
+.pf-serif{font-family:'Instrument Serif',serif;font-weight:400;letter-spacing:-0.01em}
+.pf-sans{font-family:'IBM Plex Sans',sans-serif}
+.pf-mono{font-family:'IBM Plex Mono',monospace}
+.pf-grain::after{content:'';position:absolute;inset:0;pointer-events:none;opacity:.05;background-image:radial-gradient(#141b3a 0.6px,transparent 0.6px);background-size:0.6vmin 0.6vmin}

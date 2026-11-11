@@ -1,0 +1,43 @@
+Our application, Accessibility Copilot, works in the development preview, but several problems occur after publishing.
+
+I need a systematic production debugging and repair process.
+
+**Issue 1: Account creation**
+- Creating an account with an email results in a 404.
+- Inspect the registration API, authentication flow, callback URLs, redirects, and production route configuration.
+- Identify the exact route returning 404 and fix the root cause.
+
+**Issue 2: Website scanning**
+- Scanning websites fails in the published application.
+- Inspect the frontend-to-backend API communication, production API URL, environment variables, Playwright browser installation, Chromium dependencies, network access, and scan timeouts.
+- Check backend logs and identify the exact failure.
+- Test scanning a known accessible website and a website with known accessibility violations.
+
+**Issue 3: Apply & Verify**
+- Apply & Verify sometimes displays "Verification unavailable".
+- One observed error says:
+  "The replacement must preserve the affected element type, visible text and interactive controls without hiding or disabling them. No verification claim was made."
+- Snapshot violation instances before: 0 · after: 0.
+- Investigate why the baseline snapshot contains zero matching violation instances.
+- Check whether the correct scan snapshot, element identifier, DOM context, and violation data are preserved between scanning, generating a fix, and verification.
+- Fix the underlying issue without weakening element-preservation checks.
+- Never report a fix as verified unless a real baseline violation was detected and the re-scan confirms it is resolved without introducing regressions.
+
+**Requirements**
+1. Reproduce each issue in the published environment.
+2. Compare production behavior with the development preview.
+3. Identify the root cause before modifying code.
+4. Fix each issue independently.
+5. Do not remove security checks, validation, or error handling.
+6. Do not introduce fake success responses or hide errors.
+7. Run production builds, type checks, and relevant tests.
+8. Test all three workflows after deployment.
+
+At the end, provide a report with:
+- Root cause of each issue.
+- Files changed.
+- Fixes implemented.
+- Tests performed and their results.
+- Any remaining issues.
+
+Do not mark the task complete until the three workflows have been tested successfully in the published application.

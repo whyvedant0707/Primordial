@@ -1,0 +1,42 @@
+Fix the Apply & Verify element-location failure.
+
+Current error:
+"Verification unavailable: The affected element cannot be uniquely located in the sanitized snapshot. Snapshot violation instances before: 0 · after: 0"
+
+Context:
+- AI remediation is working.
+- The affected element is `<b>Free Penguins</b>`.
+- Original issue is a color-contrast violation.
+- Original selector:
+`tr[height="25px"]:nth-child(2) > td[bgcolor="#A9B8BF"][width="150px"] > font[color="#41545D"][size="2"] > b`
+- Suggested correction changes the text color to `#2d3e46`.
+- The original selector may stop matching because snapshot sanitization changes or removes attributes.
+
+Tasks:
+
+1. Inspect the complete verification pipeline, especially snapshot sanitization, target element lookup, patch injection, and Axe re-scanning.
+
+2. Identify exactly why the original affected element cannot be located in the sanitized snapshot.
+
+3. Fix element matching so verification can reliably locate the original target element after sanitization.
+
+4. Prefer a stable element fingerprint using tag name, text content, relevant DOM context, and parent/sibling relationships. Preserve a mapping from the original element to its cloned snapshot element where possible.
+
+5. Do not rely exclusively on brittle selectors containing attributes that sanitization removes.
+
+6. Never select an element if the match is ambiguous. Return a clear error if zero or multiple candidates remain.
+
+7. Ensure the original violation is actually present in the baseline snapshot before comparing it with the patched snapshot. A zero-before, zero-after result must never be marked as verified.
+
+8. Apply the suggested patch only to the isolated in-memory DOM. Do not modify the live website.
+
+9. Re-run Axe-core against the same relevant scope and confirm:
+   - Original violation exists before patching.
+   - Original violation disappears after patching.
+   - No new violations are introduced.
+
+10. Add regression tests for selector changes during sanitization, unique matching, ambiguous matching, missing targets, and successful contrast verification.
+
+Preserve existing AI remediation, security safeguards, response schemas, and verification workflow.
+
+First explain the root cause and proposed code changes. Do not claim verification success until the tests pass.

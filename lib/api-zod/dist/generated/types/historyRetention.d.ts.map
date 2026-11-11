@@ -1,0 +1,1 @@
+{"version":3,"file":"historyRetention.d.ts","sourceRoot":"","sources":["../../../src/generated/types/historyRetention.ts"],"names":[],"mappings":"AAAA;;;;;;GAMG;AACH,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,wBAAwB,CAAC;AACnE,OAAO,KAAK,EAAE,sBAAsB,EAAE,MAAM,0BAA0B,CAAC;AAEvE,MAAM,WAAW,gBAAgB;IAC/B,IAAI,EAAE,oBAAoB,CAAC;IAC3B,OAAO,EAAE,sBAAsB,EAAE,CAAC;CACnC"}
